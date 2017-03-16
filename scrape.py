@@ -3,31 +3,29 @@ import requests
 import time
 import re
 import string
+import urllib2
 from lxml import html
 
 # Dependencies:
 # sudo apt-get install python-qt4
 
+import sys
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+from PyQt4.QtWebKit import *
 
+class Render(QWebPage):
+    def __init__(self, url):
+        self.app = QApplication(sys.argv)
+        QWebPage.__init__(self)
+        self.loadFinished.connect(self._loadFinished)
+        self.mainFrame().load(QUrl(url))
+        self.app.exec_()
+
+    def _loadFinished(self, result):
+        self.frame = self.mainFrame()
+        self.app.quit()
 """
-import sys  
-from PyQt4.QtGui import *  
-from PyQt4.QtCore import *  
-from PyQt4.QtWebKit import *  
-
-class Render(QWebPage):  
-    def __init__(self, url):  
-        self.app = QApplication(sys.argv)  
-        QWebPage.__init__(self)  
-        self.loadFinished.connect(self._loadFinished)  
-        self.mainFrame().load(QUrl(url))  
-        self.app.exec_()  
-
-    def _loadFinished(self, result):  
-        self.frame = self.mainFrame()  
-        self.app.quit()   
-"""
-
 #### Granada Info ####
 
 granadaWebsite = requests.get('https://thegranada.com').content
@@ -54,6 +52,7 @@ for i in range(1,5):
     time.sleep(1)
 
 print
+
 """
 
 
@@ -177,25 +176,24 @@ for i in range(2, 12):
         print
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #### The Uptown  Info ####
 
 # Original website:
@@ -205,29 +203,39 @@ for i in range(2, 12):
 # wzKPGBRCS55Oe46q9hCkSJAAMvVuMyNTA6e5YCHRv6NVSQC14lFeqSDE256OB2jUfe9kI_BoCiVX
 # w_wcB
 
-uptown = requests.get('https://tinyurl.com/juwa9gr')
-tree = html.fromstring(uptown.text)
-print tree.xpath
-
 print("\n\n#########################    The Uptown   #########################\n\n")
 
+
+uptown = 'https://tinyurl.com/juwa9gr'
+uptown = 'http://www.uptowntheater.com/calendar.html'
+
+r = Render(uptown)
+#result is a QString.
+result = r.frame.toHtml()
+
+formatted_result = str(result.toAscii())
+
+tree = html.fromstring(formatted_result)
+archive_links = tree.xpath('//*[@id="avn0"]/a/text()')
+print archive_links
+
+#archive_links = tree.xpath('//*[@id="DataTables_Table_0"]/tbody/tr[4]/td[2]/@class')
 for i in range(1, 10):
-    artist = '//*[@id="DataTables_Table_0"]/tbody/tr[{}]/td[2]/@class'.format(str(i))
+    artist = '//*[@id="avn{}"]/a'.format(str(i))
     artist = { 'Artist' : { 'xpath' : artist } }
-    artist = scraper.scrapes(uptown, artist)
+    print artist
+    artist = scraper.scrapes(tree, artist)
+    print artist
     artist = str(artist['Artist']).strip("[']")
     print artist
+    """
     date = '//*[@id="tribe-events-content"]/div[3]/div[{}]/div[1]/div[2]/div[1]/div[1]/div[1]/span'.format(str(i))
     date = { 'Date' : { 'xpath' : date } }
     date = scraper.scrapes(jackpot, date)
     date = str(date['Date']).strip("[']")
     date = date.split('@')
     date = date[0]
-    if(artist):
-        print("{}\n{}".format(artist))#, date))
-        print
-
 """
-
-
-
+    if(artist):
+        print("{}\n".format(artist))#, date))
+        print
