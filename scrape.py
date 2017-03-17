@@ -1,53 +1,73 @@
 import scraper
 import requests
 import time
-import re
 import string
-import urllib2
 from lxml import html
 import subprocess
 import sys
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from PyQt4.QtWebKit import *
+
+'''
+Dependencies:
+> sudo apt-get install python-qt4
+> pip install lxml
+'''
 
 
-# Dependencies:
-# sudo apt-get install python-qt4
 
 
+'''
+#### Get HTML from venue websites ####
+
+## Save JS generated HTML to htmlList ##
+# Opens urljsrender.py and runs.
+# Had to do it this way because Render() would only render one request
+# per program execute.
+#
+# TODO : Figure out a way to render multiple websites w/o use of secondary
+#        process
+'''
 
 
 htmlList = ['']*2
 
-cmd = 'python script2.py http://www.midlandkc.com/events'
+cmd = 'python urljsrender.py http://www.midlandkc.com/events'
 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
 out, err = p.communicate()
 htmlList[0] = out
 
-
-cmd = 'python script2.py http://www.uptowntheater.com/calendar.html'
+cmd = 'python urljsrender.py http://www.uptowntheater.com/calendar.html'
 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
 out, err = p.communicate()
 htmlList[1] = out
 
 
 
+
+
+'''
+Save static html to approptriate variable
+'''
 crossroads = requests.get('http://www.crossroadskc.com/').content
 granadaWebsite = requests.get('https://thegranada.com').content
 bottleneckWebsite = requests.get('http://thebottlenecklive.com').content
 libertyHall = requests.get('http://libertyhall.net/events').content
 jackpot = requests.get('http://www.jackpotlawrence.com/events/list').content
 
-#### Granada Info ####
 
-#granadaWebsite = requests.get('https://thegranada.com').content
 
-count = 1
+
+
+###################
+''' The Granada '''
+###################
+
+# url: https://thegranada.com
+
 print("\n\n#########################"),
 print ("   The Granada   "),
 print ("#########################\n\n")
 
+count = 1
 for i in range(0,15) :
     artist = "//div[4]/div[2]/div[1]/div[1]/div[{}]" \
                 "/div[2]/div[1]/div[1]/h2/a".format(str(i+2))
@@ -65,28 +85,28 @@ for i in range(0,15) :
         print
     elif(count == 10):
         break
-
 print('\n\n')
 
 
 
 
 
-
-for i in range(1,10):
+for i in range(0,10):                       # Sleep 10 seconds
     time.sleep(1)
 
 
 
 
 
-#### The Bottleneck Info ####
+######################
+''' The Bottleneck '''
+######################
 
 print("\n\n#########################"),
 print ("   The Bottleneck   "),
 print ("#########################\n\n")
 
-#bottleneckWebsite = requests.get('http://thebottlenecklive.com').content
+# url: http://thebottlenecklive.com
 
 count = 1
 for i in range(0,10):
@@ -118,17 +138,18 @@ print("\n\n")
 
 
 
-
-for i in range(1,10):
+for i in range(0,10):                       # Sleep 10 seconds
     time.sleep(1)
 
 
 
 
 
-#### Liberty Hall Info ####
+#########################
+''' Liberty Hall Info '''
+#########################
 
-#libertyHall = requests.get('http://libertyhall.net/events').content
+# url: http://libertyhall.net/events
 
 print("\n\n#########################"),
 print ("    Liberty Hall   "),
@@ -159,17 +180,18 @@ print("\n\n")
 
 
 
-
-for i in range(1,10):
+for i in range(0,10):                       # Sleep 10 seconds
     time.sleep(1)
 
 
 
 
 
-#### Liberty Hall Info ####
+#########################
+''' Liberty Hall Info '''
+#########################
 
-#jackpot = requests.get('http://www.jackpotlawrence.com/events/list').content
+# url: http://www.jackpotlawrence.com/events/list
 
 print("\n\n#########################"),
 print ("    The Jackpot   "),
@@ -207,16 +229,19 @@ print("\n\n")
 
 
 
-for i in range(1,10):
+
+for i in range(0,10):                       # Sleep 10 seconds
     time.sleep(1)
 
 
 
 
 
-#### CrossroadsKC Info ####
+####################
+''' CrossroadsKC '''
+####################
 
-#crossroads = requests.get('http://www.crossroadskc.com/').content
+# url: http://www.crossroadskc.com/
 
 print ("\n\n#########################"),
 print ("    Crossroads KC   "),
@@ -253,14 +278,16 @@ print("\n\n")
 
 
 
-for i in range(1,10):
+for i in range(1,10):                       # Sleep 10 seconds
     time.sleep(1)
 
 
 
 
 
-#### Midland Info ####
+###################
+''' The Midland '''
+###################
 
 print("\n\n#########################"),
 print ("    Midland KC   "),
@@ -268,9 +295,9 @@ print ("#########################\n\n")
 
 
 
-#midland = 'http://www.midlandkc.com/events'
+# url: http://www.midlandkc.com/events
 
-formatted_result = htmlList[0]
+formatted_result = htmlList[0]              # Get rendered html
 
 count = 1
 for i in range(1, 259):
@@ -297,7 +324,8 @@ for i in range(1, 259):
     support = { 'Support' : { 'xpath' : support } }
     support = scraper.scrapes(formatted_result, support)
     support = str(support['Support']).strip("[']")
-    if(artist and count <= 10):
+
+    if(artist and count <= 10):             # If artist found, print
         count += 1
         if(support):
             print("{}\n{}\n{}".format(artist, support, date))
@@ -311,28 +339,25 @@ print("\n\n")
 
 
 
-for i in range(1,10):
+
+for i in range(1,10):                       # Sleep 10 seconds
     time.sleep(1)
 
 
 
 
 
-
-#### The Uptown  Info ####
-
-# Original website:
-# http://www.ticketofficesales.com/venue/uptown-theater-kansas-city-tickets-
-# for-sale.aspx?&mkwid=s8dsPJ9Lp|pcrid|141649744496|pkw|uptown%20theatre%20
-# events|pmt|b|pdv|c|&st-t=google&vt-k=uptown%20theatre%20events&gclid=CjwKEAj
-# wzKPGBRCS55Oe46q9hCkSJAAMvVuMyNTA6e5YCHRv6NVSQC14lFeqSDE256OB2jUfe9kI_BoCiVX
-# w_wcB
+##################
+''' The Uptown '''
+##################
 
 print("\n\n#########################"),
 print ("    The Uptown   "),
 print ("#########################\n\n")
 
-formatted_result = htmlList[1]
+# url: http://www.uptowntheater.com/calendar.html
+
+formatted_result = htmlList[1]              # Get the rendered html
 
 count = 1
 for i in range(1, 259):
@@ -342,7 +367,7 @@ for i in range(1, 259):
     tempArtist = scraper.scrapes(formatted_result, tempArtist)
     tempArtist = str(tempArtist['Artist']).strip("[']")
 
-    if(tempArtist != 'RSVP' and
+    if(tempArtist != 'RSVP' and             # Filter extraneous info
         tempArtist != 'HOME' and
         tempArtist != 'PRIVATE EVENTS' and
         tempArtist != 'CONTACT' and
@@ -368,7 +393,7 @@ for i in range(1, 259):
         tempArtist = ''
 
 
-    if(artist and count <= 10):
+    if(artist and count <= 10):             # If artist found, print.
         count += 1
         if(support):
             print("{}\n{}\n{}".format(artist, support, date))
