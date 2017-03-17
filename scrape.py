@@ -25,7 +25,7 @@ class Render(QWebPage):
     def _loadFinished(self, result):
         self.frame = self.mainFrame()
         self.app.quit()
-"""
+
 #### Granada Info ####
 
 granadaWebsite = requests.get('https://thegranada.com').content
@@ -47,13 +47,14 @@ for i in range(0,15) :
 
 print('\n\n')
 
+
 """
 for i in range(1,5):
     time.sleep(1)
 
 print
-
 """
+
 
 
 #### The Bottleneck Info ####
@@ -85,6 +86,12 @@ for i in range(0,10):
 print("\n\n")
 
 
+
+
+
+
+
+
 #### Liberty Hall Info ####
 
 libertyHall = requests.get('http://libertyhall.net/events').content
@@ -108,6 +115,13 @@ for i in range(1, 10):
 
 
 print("\n\n")
+
+
+
+
+
+
+
 
 
 
@@ -176,11 +190,6 @@ for i in range(2, 12):
         print
 
 
-"""
-
-
-
-
 
 
 
@@ -216,26 +225,43 @@ result = r.frame.toHtml()
 formatted_result = str(result.toAscii())
 
 tree = html.fromstring(formatted_result)
-archive_links = tree.xpath('//*[@id="avn0"]/a/text()')
-print archive_links
 
-#archive_links = tree.xpath('//*[@id="DataTables_Table_0"]/tbody/tr[4]/td[2]/@class')
-for i in range(1, 10):
-    artist = '//*[@id="avn{}"]/a'.format(str(i))
-    artist = { 'Artist' : { 'xpath' : artist } }
-    print artist
-    artist = scraper.scrapes(tree, artist)
-    print artist
-    artist = str(artist['Artist']).strip("[']")
-    print artist
-    """
-    date = '//*[@id="tribe-events-content"]/div[3]/div[{}]/div[1]/div[2]/div[1]/div[1]/div[1]/span'.format(str(i))
-    date = { 'Date' : { 'xpath' : date } }
-    date = scraper.scrapes(jackpot, date)
-    date = str(date['Date']).strip("[']")
-    date = date.split('@')
-    date = date[0]
-"""
+for i in range(1, 259):
+    tempArtist = '//*[@id="id{}"]/div/div/p'.format(str(i))
+    tempArtist = '//*[@id="id{}"]/div/div/p/a'.format(str(i))
+    tempArtist = { 'Artist' : { 'xpath' : tempArtist } }
+    tempArtist = scraper.scrapes(formatted_result, tempArtist)
+    tempArtist = str(tempArtist['Artist']).strip("[']")
+
+    if(tempArtist != 'RSVP' and
+        tempArtist != 'HOME' and
+        tempArtist != 'PRIVATE EVENTS' and
+        tempArtist != 'CONTACT' and
+        tempArtist != 'VIEW SEATING CHART' and
+        tempArtist != 'CONCERT CALENDAR' and
+        tempArtist != 'VIEW AUDIO SPECS' and
+        tempArtist != 'CAREERS' and
+        tempArtist != 'SEATING CHART' and
+        tempArtist != 'CONTACT US' and
+        tempArtist != 'FAQ' and
+        tempArtist != 'VIEW NYE PHOTOS') :
+        artist = tempArtist
+        date = '//*[@id="id{}"]/div/div/p'.format(str(i + 1))
+        date = { 'Date' : { 'xpath' : date } }
+        date = scraper.scrapes(formatted_result, date)
+        date = str(date['Date']).strip("[']")
+        support = '//*[@id="id{}"]/div/div/p'.format(str(i+6))
+        support = { 'Support' : { 'xpath' : support } }
+        support = scraper.scrapes(formatted_result, support)
+        support = str(support['Support']).strip("[']")
+
+    else :
+        tempArtist = ''
+
+
     if(artist):
-        print("{}\n".format(artist))#, date))
+        if(support):
+            print("{}\n{}\n{}".format(artist, support, date))
+        else:
+            print("{}\n{}".format(artist, date))
         print
