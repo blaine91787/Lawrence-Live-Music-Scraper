@@ -5,64 +5,90 @@ import re
 import string
 import urllib2
 from lxml import html
-
-# Dependencies:
-# sudo apt-get install python-qt4
-
+import subprocess
 import sys
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from PyQt4.QtWebKit import *
 
-class Render(QWebPage):
-    def __init__(self, url):
-        self.app = QApplication(sys.argv)
-        QWebPage.__init__(self)
-        self.loadFinished.connect(self._loadFinished)
-        self.mainFrame().load(QUrl(url))
-        self.app.exec_()
 
-    def _loadFinished(self, result):
-        self.frame = self.mainFrame()
-        self.app.quit()
+# Dependencies:
+# sudo apt-get install python-qt4
+
+
+
+
+htmlList = ['']*2
+
+cmd = 'python script2.py http://www.midlandkc.com/events'
+p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+out, err = p.communicate()
+htmlList[0] = out
+
+
+cmd = 'python script2.py http://www.uptowntheater.com/calendar.html'
+p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+out, err = p.communicate()
+htmlList[1] = out
+
+
+
+crossroads = requests.get('http://www.crossroadskc.com/').content
+granadaWebsite = requests.get('https://thegranada.com').content
+bottleneckWebsite = requests.get('http://thebottlenecklive.com').content
+libertyHall = requests.get('http://libertyhall.net/events').content
+jackpot = requests.get('http://www.jackpotlawrence.com/events/list').content
 
 #### Granada Info ####
 
-granadaWebsite = requests.get('https://thegranada.com').content
+#granadaWebsite = requests.get('https://thegranada.com').content
 
-print("\n\n#########################   The Granada   #########################\n\n")
+count = 1
+print("\n\n#########################"),
+print ("   The Granada   "),
+print ("#########################\n\n")
 
 for i in range(0,15) :
-    artist = "//div[4]/div[2]/div[1]/div[1]/div[{}]/div[2]/div[1]/div[1]/h2/a".format(str(i+2))
-    date = "//div[4]/div[2]/div[1]/div[1]/div[{}]/div[2]/div[1]/div[2]".format(str(i+2))
+    artist = "//div[4]/div[2]/div[1]/div[1]/div[{}]" \
+                "/div[2]/div[1]/div[1]/h2/a".format(str(i+2))
+    date = ("//div[4]/div[2]/div[1]/div[1]/div[{}]" \
+                "/div[2]/div[1]/div[2]".format(str(i+2)))
     artist = { 'Artist' : { 'xpath' : artist } }
     date = {'Date' : { 'xpath' : date } }
     artist = scraper.scrapes(granadaWebsite,artist)
     date = scraper.scrapes(granadaWebsite,date)
     artist = str(artist['Artist']).strip("[']")
     date = str(date['Date']).strip("[']")
-    if(artist):
+    if(artist and count <= 10):
+        count += 1
         print("{}\n{}".format(artist, date))
         print
+    elif(count == 10):
+        break
 
 print('\n\n')
 
 
-"""
-for i in range(1,5):
+
+
+
+
+for i in range(1,10):
     time.sleep(1)
 
-print
-"""
+
 
 
 
 #### The Bottleneck Info ####
 
-print("\n\n#########################   The Bottleneck   #########################\n\n")
+print("\n\n#########################"),
+print ("   The Bottleneck   "),
+print ("#########################\n\n")
 
-bottleneckWebsite = requests.get('http://thebottlenecklive.com').content
+#bottleneckWebsite = requests.get('http://thebottlenecklive.com').content
 
+count = 1
 for i in range(0,10):
     artist = '//*[@id="content"]/div[{}]/div[3]/a/h4'.format(str(i))
     dayName = '//*[@id="content"]/div[{}]/div[1]/h6[3]'.format(str(i))
@@ -80,9 +106,12 @@ for i in range(0,10):
     dayName = str(dayName['Day Name']).strip("[']")
     month = str(month['Month']).strip("[']")
     dayNum = str(dayNum['Day Num']).strip("[']")
-    if(artist):
+    if(artist and count <= 10):
+        count += 1
         print("{}\n{}, {} {}".format(artist, dayName, month, dayNum))
         print
+    elif(count == 10):
+        break
 print("\n\n")
 
 
@@ -90,14 +119,22 @@ print("\n\n")
 
 
 
+for i in range(1,10):
+    time.sleep(1)
+
+
+
 
 
 #### Liberty Hall Info ####
 
-libertyHall = requests.get('http://libertyhall.net/events').content
+#libertyHall = requests.get('http://libertyhall.net/events').content
 
-print("\n\n#########################    Liberty Hall   #########################\n\n")
+print("\n\n#########################"),
+print ("    Liberty Hall   "),
+print ("#########################\n\n")
 
+count = 1
 for i in range(1, 10):
     artist = '/html/body/div[2]/div/div/div[{}]/div[3]/div/h5/a'.format(str(i))
     artist = { 'Artist' : { 'xpath' : artist } }
@@ -109,10 +146,12 @@ for i in range(1, 10):
     date = scraper.scrapes(libertyHall, date)
     date = str(date['Date']).strip("[']")
 
-    if(artist):
+    if(artist and count <= 10):
+        count += 1
         print("{}\n{}".format(artist, date))
         print
-
+    elif(count == 10):
+        break
 
 print("\n\n")
 
@@ -121,18 +160,25 @@ print("\n\n")
 
 
 
+for i in range(1,10):
+    time.sleep(1)
+
 
 
 
 
 #### Liberty Hall Info ####
 
-jackpot = requests.get('http://www.jackpotlawrence.com/events/list').content
+#jackpot = requests.get('http://www.jackpotlawrence.com/events/list').content
 
-print("\n\n#########################    The Jackpot   #########################\n\n")
+print("\n\n#########################"),
+print ("    The Jackpot   "),
+print ("#########################\n\n")
 
+count = 1
 for i in range(1, 10):
-    artist = '//*[@id="tribe-events-content"]/div[3]/div[{}]/div[1]/div[1]/div[1]/h3/a'.format(str(i))
+    artist = '//*[@id="tribe-events-content"]/div[3]/div[{}]' \
+                '/div[1]/div[1]/div[1]/h3/a'.format(str(i))
     artist = { 'Artist' : { 'xpath' : artist } }
     artist = scraper.scrapes(jackpot, artist)
     artist = str(artist['Artist']).strip("[']")
@@ -143,30 +189,40 @@ for i in range(1, 10):
     artist = artist.replace('at The Jackpot', '')
     artist = artist.replace('at Jackpot', '')
     artist = artist.replace('Bar/Jackpot/Ingredient', '')
-    date = '//*[@id="tribe-events-content"]/div[3]/div[{}]/div[1]/div[2]/div[1]/div[1]/div[1]/span'.format(str(i))
+    date = '//*[@id="tribe-events-content"]/div[3]/div[{}]' \
+            '/div[1]/div[2]/div[1]/div[1]/div[1]/span'.format(str(i))
     date = { 'Date' : { 'xpath' : date } }
     date = scraper.scrapes(jackpot, date)
     date = str(date['Date']).strip("[']")
     date = date.split('@')
     date = date[0]
-    if(artist):
+    if(artist and count <= 10):
+        count += 1
         print("{}\n{}".format(artist, date))#, date))
         print
+    elif(count == 10):
+        break
+print("\n\n")
+
+
+
+
+for i in range(1,10):
+    time.sleep(1)
 
 
 
 
 
+#### CrossroadsKC Info ####
 
+#crossroads = requests.get('http://www.crossroadskc.com/').content
 
+print ("\n\n#########################"),
+print ("    Crossroads KC   "),
+print ("#########################\n\n")
 
-
-#### Liberty Hall Info ####
-
-crossroads = requests.get('http://www.crossroadskc.com/').content
-
-print("\n\n#########################    Crossroads KC   #########################\n\n")
-
+count = 1
 for i in range(2, 12):
     artist = '//*[@id="midcontent"]/div[{}]/div[3]/p[1]/a[1]'.format(str(i))
     artist = { 'Artist' : { 'xpath' : artist } }
@@ -185,39 +241,78 @@ for i in range(2, 12):
     dayNum = scraper.scrapes(crossroads, dayNum)
     dayNum = str(dayNum['Day Num']).strip("[']")
     date = "{}, {} {}".format(dayName, month, dayNum)
-    if(artist):
+    if(artist and count <= 10):
+        count += 1
         print("{}\n{}".format(artist, date))
         print
+    elif(count == 10):
+        break
+print("\n\n")
 
 
 
 
 
+for i in range(1,10):
+    time.sleep(1)
 
 
 
-#### Liberty Hall Info ####
 
-midland = requests.get('http://www.midlandkc.com/events').content
-"""
-//*[@id="eventsList"]/div[15]/div[2]/div[2]/span[1]/span
-//*[@id="eventsList"]/div[16]/div[2]/div[1]/h3/a
-//*[@id="eventsList"]/div[15]/div[2]/div[1]/h3/a
-"""
-print("\n\n#########################    Midland KC   #########################\n\n")
 
-for i in range(1, 20):
-    artist = '//*[@id="eventsList"]/div[{}]/div[2]/div[1]/h3/a'.format(str(i))
-    artist = { 'Artist' : { 'xpath' : artist } }
-    artist = scraper.scrapes(crossroads, artist)
-    artist = str(artist['Artist']).strip("[']")
-    date = '//*[@id="eventsList"]/div[{}]/div[2]/div[2]/span[1]/span'.format(str(i))
+#### Midland Info ####
+
+print("\n\n#########################"),
+print ("    Midland KC   "),
+print ("#########################\n\n")
+
+
+
+#midland = 'http://www.midlandkc.com/events'
+
+formatted_result = htmlList[0]
+
+count = 1
+for i in range(1, 259):
+    tempArtist = '//*[@id="eventsList"]/div[{}]' \
+                    '/div[2]/div[1]/h3/a'.format(str(i))
+    tempArtist = '//*[@id="eventsList"]/div[{}]' \
+                    '/div[2]/div[1]/h3/a'.format(str(i))
+    tempArtist = { 'Artist' : { 'xpath' : tempArtist } }
+    tempArtist = scraper.scrapes(formatted_result, tempArtist)
+    tempArtist = str(tempArtist['Artist']).strip("[']")
+    tempArtist = tempArtist.replace('\\n', '')
+    tempArtist = tempArtist.replace('\\t','')
+
+    artist = tempArtist
+    date = '//*[@id="eventsList"]/div[{}]' \
+            '/div[2]/div[2]/span[1]/text()'.format(str(i))
     date = { 'Date' : { 'xpath' : date } }
-    date = scraper.scrapes(midland, date)
+    date = scraper.scrapes(formatted_result, date)
     date = str(date['Date']).strip("[']")
-    if(artist):
-        print("{}\n{}".format(artist, date))
+    date = date.replace('\\n', '')
+    date = date.replace('\\t', '')
+    date = date.replace("', '", '')
+    support = '//*[@id="eventsList"]/div[{}]/div[2]/div[1]/h4'.format(str(i))
+    support = { 'Support' : { 'xpath' : support } }
+    support = scraper.scrapes(formatted_result, support)
+    support = str(support['Support']).strip("[']")
+    if(artist and count <= 10):
+        count += 1
+        if(support):
+            print("{}\n{}\n{}".format(artist, support, date))
+        else:
+            print("{}\n{}".format(artist, date))
         print
+    elif(count == 10):
+        break
+print("\n\n")
+
+
+
+
+for i in range(1,10):
+    time.sleep(1)
 
 
 
@@ -233,19 +328,13 @@ for i in range(1, 20):
 # wzKPGBRCS55Oe46q9hCkSJAAMvVuMyNTA6e5YCHRv6NVSQC14lFeqSDE256OB2jUfe9kI_BoCiVX
 # w_wcB
 
-print("\n\n#########################    The Uptown   #########################\n\n")
+print("\n\n#########################"),
+print ("    The Uptown   "),
+print ("#########################\n\n")
 
-uptown = 'https://tinyurl.com/juwa9gr'
-uptown = 'http://www.uptowntheater.com/calendar.html'
+formatted_result = htmlList[1]
 
-r = Render(uptown)
-#result is a QString.
-result = r.frame.toHtml()
-
-formatted_result = str(result.toAscii())
-
-tree = html.fromstring(formatted_result)
-
+count = 1
 for i in range(1, 259):
     tempArtist = '//*[@id="id{}"]/div/div/p'.format(str(i))
     tempArtist = '//*[@id="id{}"]/div/div/p/a'.format(str(i))
@@ -279,9 +368,12 @@ for i in range(1, 259):
         tempArtist = ''
 
 
-    if(artist):
+    if(artist and count <= 10):
+        count += 1
         if(support):
             print("{}\n{}\n{}".format(artist, support, date))
         else:
             print("{}\n{}".format(artist, date))
         print
+    elif(count == 10):
+        break
