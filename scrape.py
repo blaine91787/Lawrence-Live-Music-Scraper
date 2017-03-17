@@ -10,22 +10,22 @@ from lxml import html
 
 
 """
-import sys  
-from PyQt4.QtGui import *  
-from PyQt4.QtCore import *  
-from PyQt4.QtWebKit import *  
+import sys
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+from PyQt4.QtWebKit import *
 
-class Render(QWebPage):  
-    def __init__(self, url):  
-        self.app = QApplication(sys.argv)  
-        QWebPage.__init__(self)  
-        self.loadFinished.connect(self._loadFinished)  
-        self.mainFrame().load(QUrl(url))  
-        self.app.exec_()  
+class Render(QWebPage):
+    def __init__(self, url):
+        self.app = QApplication(sys.argv)
+        QWebPage.__init__(self)
+        self.loadFinished.connect(self._loadFinished)
+        self.mainFrame().load(QUrl(url))
+        self.app.exec_()
 
-    def _loadFinished(self, result):  
-        self.frame = self.mainFrame()  
-        self.app.quit()   
+    def _loadFinished(self, result):
+        self.frame = self.mainFrame()
+        self.app.quit()
 """
 
 #### Granada Info ####
@@ -183,7 +183,28 @@ for i in range(2, 12):
 
 
 
+#### Liberty Hall Info ####
 
+midland = requests.get('http://www.midlandkc.com/events').content
+"""
+//*[@id="eventsList"]/div[15]/div[2]/div[2]/span[1]/span
+//*[@id="eventsList"]/div[16]/div[2]/div[1]/h3/a
+//*[@id="eventsList"]/div[15]/div[2]/div[1]/h3/a
+"""
+print("\n\n#########################    Midland KC   #########################\n\n")
+
+for i in range(1, 20):
+    artist = '//*[@id="eventsList"]/div[{}]/div[2]/div[1]/h3/a'.format(str(i))
+    artist = { 'Artist' : { 'xpath' : artist } }
+    artist = scraper.scrapes(crossroads, artist)
+    artist = str(artist['Artist']).strip("[']")
+    date = '//*[@id="eventsList"]/div[{}]/div[2]/div[2]/span[1]/span'.format(str(i))
+    date = { 'Date' : { 'xpath' : date } }
+    date = scraper.scrapes(midland, date)
+    date = str(date['Date']).strip("[']")
+    if(artist):
+        print("{}\n{}".format(artist, date))
+        print
 
 
 
@@ -228,6 +249,3 @@ for i in range(1, 10):
         print
 
 """
-
-
-
