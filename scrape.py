@@ -3,6 +3,7 @@ import requests
 import time
 import string
 from lxml import html
+from requests.exceptions import HTTPError
 import subprocess
 import sys
 
@@ -17,6 +18,21 @@ print("\n\n#########################"),
 print ("   Processing   "),
 print ("#########################\n\n")
 
+toolbar_width = 65
+
+# setup toolbar
+sys.stdout.write("[0-%s-100]" % ("-" * toolbar_width))
+sys.stdout.flush()
+sys.stdout.write("\b" * (toolbar_width+4)) # return to start of line, after '['
+'''
+for i in xrange(toolbar_width - 2):
+    time.sleep(0.1) # do real work here
+    # update the bar
+    sys.stdout.write('*')
+    sys.stdout.flush()
+
+sys.stdout.write("\n")
+'''
 '''
 #### Get HTML from venue websites ####
 
@@ -30,26 +46,42 @@ print ("#########################\n\n")
 '''
 
 htmlList = ['']*2
+numWebsites = 7;
+numColumns = 65;
+percentDone = numColumns / numWebsites
+exception = ''
 
 try :
+    rMidland = requests.get('http://midlandkc.com/events')
+    rMidland.raise_for_status()
     cmd = 'python urljsrender.py http://www.midlandkc.com/events'
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     htmlList[0] = out
-    print('Midland Successful.\n')
 except Exception as e :
-    print('Error processing http://www.midlandkc.com/events.\n{}\n'.format(e))
+    exception = exception + '\nError processing Midland.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
 
 
 try :
+    rUptown = requests.get('http://www.uptowntheater.com/calendar.html')
+    rUptown.raise_for_status()
     cmd = 'python urljsrender.py http://www.uptowntheater.com/calendar.html'
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     htmlList[1] = out
-    print('Uptown successful\n')
+    #print('{}'.format('.' * (numColumns / numWebsites))),
+    #print('Uptown successful\n')
 except Exception as e :
-    print('Error processing http://www.uptowntheater.com' \
-            '/calendar.html.\n{}\n'.format(e))
+    exception = exception + '\nError processing Uptown Theater' \
+                                '/calendar.html.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
 
 
 
@@ -59,33 +91,70 @@ except Exception as e :
 Save static html to approptriate variable
 '''
 try :
-    crossroads = requests.get('http://www.crossroadskc.com/').content
-    print ( 'Crossroads successful.\n' )
+    rCrossroads = requests.get('http://www.crossroadskc.com/')
+    crossroads = rCrossroads.content
+    rCrossroads.raise_for_status()
 except Exception as e:
-    print ( 'Error processing http://www.crossroadskc.com\n{}\n'.format(e) )
-try :
-    granadaWebsite = requests.get('https://thegranada.com').content
-    print ( 'Granada successful.\n' )
-except Exception as e:
-    print ( "Error processing https://thegranada.com\n{}\n".format(e))
-try :
-    bottleneckWebsite = requests.get('http://thebottlenecklive.com').content
-    print ( 'Bottleneck successful.\n' )
-except Exception as e:
-    print ( 'Error processing http://thebottlenecklive.com\n{}\n'.format(e) )
-try :
-    libertyHall = requests.get('http://libertyhall.net/events').content
-    print ( 'Liberty Hall successful.\n' )
-except Exception as e:
-    print ( 'Error processing http://libertyhall.net/events\n{}\n'.format(e) )
-try :
-    jackpot = requests.get('http://www.jackpotlawrence.com/events/list').content
-    print ( 'Jackpot successful.\n' )
-except Exception as e:
-    print ( 'Error processing http://www.jackpotlawrence.com' \
-                '/events/list\n{}\n'.format(e) )
+    exception = exception + '\nError processing Crossroads.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
 
 
+try :
+    rGranada = requests.get('https://thegranada.com')
+    granadaWebsite = rGranada.content
+    rGranada.raise_for_status()
+except Exception as e:
+    exception = exception + '\nError processing Granada.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
+
+
+try :
+    rBottleneck = requests.get('http://thebottlenecklive.com')
+    bottleneckWebsite = rBottleneck.content
+    rBottleneck.raise_for_status()
+except Exception as e:
+    exception = exception + '\nError processing Bottleneck.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
+
+
+try :
+    rLibertyHall = requests.get('http://libertyhall.net/events')
+    libertyHall = rLibertyHall.content
+    rLibertyHall.raise_for_status()
+except Exception as e:
+    exception = exception + '\nError processing Liberty Hall.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
+
+
+try :
+    rJackpot = requests.get('http://www.jackpotlawrence.com/events/list')
+    jackpot = rJackpot.content
+    rJackpot.raise_for_status()
+except Exception as e :
+    exception = exception + '\nError processing Jackpot.\n{}\n'.format(e)
+for i in xrange(percentDone):
+    time.sleep(0.1)
+    sys.stdout.write('*')
+    sys.stdout.flush()
+
+sys.stdout.write("\n")
+
+if(exception) :
+    print exception
+else :
+    print '\nSuccess:\nNo errors on loading.\n'
 
 
 
@@ -100,6 +169,7 @@ print ("   The Granada   "),
 print ("#########################\n\n")
 
 try :
+    rGranada.raise_for_status()
     count = 1
     for i in range(0,15) :
         artist = "//div[4]/div[2]/div[1]/div[1]/div[{}]" \
@@ -119,7 +189,7 @@ try :
         elif(count == 10):
             break
 except Exception as e:
-    print ( 'Error in Granada.\n{}'.format(e) )
+    print ( 'Error in Granada.\n{}\n'.format(e) )
 print('\n\n')
 
 
@@ -144,6 +214,7 @@ print ("#########################\n\n")
 # url: http://thebottlenecklive.com
 
 try :
+    rBottleneck.raise_for_status()
     count = 1
     for i in range(0,10):
         artist = '//*[@id="content"]/div[{}]/div[3]/a/h4'.format(str(i))
@@ -169,7 +240,7 @@ try :
         elif(count == 10):
             break
 except :
-    print ('Error in Bottleneck.')
+    print ('Error in Bottleneck.\n{}\n'.format(e))
 print("\n\n")
 
 
@@ -194,6 +265,7 @@ print ("    Liberty Hall   "),
 print ("#########################\n\n")
 
 try :
+    rLibertyHall.raise_for_status()
     count = 1
     for i in range(1, 10):
         artist = '/html/body/div[2]/div/div/div[{}]' \
@@ -215,7 +287,7 @@ try :
         elif(count == 10):
             break
 except :
-    print ( 'Error in Liberty Hall.')
+    print ( 'Error in Liberty Hall.\n{}\n'.format(e) )
 print("\n\n")
 
 
@@ -240,6 +312,7 @@ print ("    The Jackpot   "),
 print ("#########################\n\n")
 
 try :
+    rJackpot.raise_for_status()
     count = 1
     for i in range(1, 10):
         artist = '//*[@id="tribe-events-content"]/div[3]/div[{}]' \
@@ -268,7 +341,7 @@ try :
         elif(count == 10):
             break
 except :
-    print ( 'Error in Jackpot.' )
+    print ( 'Error in Jackpot.\n{}\n'.format(e) )
 print("\n\n")
 
 
@@ -293,6 +366,7 @@ print ("    Crossroads KC   "),
 print ("#########################\n\n")
 
 try :
+    rCrossroads.raise_for_status()
     count = 1
     for i in range(2, 12):
         artist = '//*[@id="midcontent"]/div[{}]/div[3]/p[1]/a[1]'.format(str(i))
@@ -319,7 +393,7 @@ try :
         elif(count == 10):
             break
 except :
-    print ('Error in Crossroads.')
+    print ('Error in Crossroads.\n{}\n'.format(e))
 print("\n\n")
 
 
@@ -346,6 +420,7 @@ print ("#########################\n\n")
 # url: http://www.midlandkc.com/events
 
 try :
+    rMidland.raise_for_status()
     formatted_result = htmlList[0]              # Get rendered html
 
     count = 1
@@ -385,7 +460,7 @@ try :
         elif(count == 10):
             break
 except :
-    print ('Error in Midland.')
+    print ('Error in Midland.\n{}\n'.format(e) )
 print("\n\n")
 
 
@@ -410,6 +485,7 @@ print ("#########################\n\n")
 # url: http://www.uptowntheater.com/calendar.html
 
 try :
+    rUptown.raise_for_status()
     formatted_result = htmlList[1]              # Get the rendered html
 
     count = 1
@@ -456,4 +532,6 @@ try :
         elif(count == 10):
             break
 except :
-    print ('Error in Uptown.')
+    print ('Error in Uptown.\n{}\n'.format(e) )
+
+print '\n\n'
