@@ -51,8 +51,14 @@ numColumns = 65;
 percentDone = numColumns / numWebsites
 exception = ''
 
+
+headers = {
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) ' \
+    'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'}
+
+
 try :
-    rMidland = requests.get('http://midlandkc.com/events')
+    rMidland = requests.get('http://midlandkc.com/events', headers = headers, timeout=20)
     rMidland.raise_for_status()
     cmd = 'python urljsrender.py http://www.midlandkc.com/events'
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -67,7 +73,8 @@ for i in xrange(percentDone):
 
 
 try :
-    rUptown = requests.get('http://www.uptowntheater.com/calendar.html')
+    rUptown = requests.get('http://www.uptowntheater.com/calendar.html', headers = headers, timeout = 20)
+        #headers=headers, timeout=20)}
     rUptown.raise_for_status()
     cmd = 'python urljsrender.py http://www.uptowntheater.com/calendar.html'
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -91,7 +98,8 @@ for i in xrange(percentDone):
 Save static html to approptriate variable
 '''
 try :
-    rCrossroads = requests.get('http://www.crossroadskc.com/')
+    rCrossroads = requests.get('http://www.crossroadskc.com/', headers = headers, timeout = 20)
+        #headers=headers, timeout=20)}
     crossroads = rCrossroads.content
     rCrossroads.raise_for_status()
 except Exception as e:
@@ -103,7 +111,7 @@ for i in xrange(percentDone):
 
 
 try :
-    rGranada = requests.get('https://thegranada.com')
+    rGranada = requests.get('https://thegranada.com', headers = headers, timeout = 20)
     granadaWebsite = rGranada.content
     rGranada.raise_for_status()
 except Exception as e:
@@ -115,7 +123,8 @@ for i in xrange(percentDone):
 
 
 try :
-    rBottleneck = requests.get('http://thebottlenecklive.com')
+    rBottleneck = {
+        requests.get('http://thebottlenecklive.com', headers = headers, timeout = 20)}
     bottleneckWebsite = rBottleneck.content
     rBottleneck.raise_for_status()
 except Exception as e:
@@ -127,7 +136,7 @@ for i in xrange(percentDone):
 
 
 try :
-    rLibertyHall = requests.get('http://libertyhall.net/events')
+    rLibertyHall = requests.get('http://libertyhall.net/events', headers = headers, timeout = 20)
     libertyHall = rLibertyHall.content
     rLibertyHall.raise_for_status()
 except Exception as e:
@@ -139,7 +148,7 @@ for i in xrange(percentDone):
 
 
 try :
-    rJackpot = requests.get('http://www.jackpotlawrence.com/events/list')
+    rJackpot = requests.get('http://www.jackpotlawrence.com/events/list', headers = headers, timeout = 20)
     jackpot = rJackpot.content
     rJackpot.raise_for_status()
 except Exception as e :
