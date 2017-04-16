@@ -123,8 +123,7 @@ for i in xrange(percentDone):
 
 
 try :
-    rBottleneck = {
-        requests.get('http://thebottlenecklive.com', headers = headers, timeout = 20)}
+    rBottleneck = requests.get('http://thebottlenecklive.com', headers = headers, timeout = 20)
     bottleneckWebsite = rBottleneck.content
     rBottleneck.raise_for_status()
 except Exception as e:
