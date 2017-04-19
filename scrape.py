@@ -74,14 +74,11 @@ for i in xrange(percentDone):
 
 try :
     rUptown = requests.get('http://www.uptowntheater.com/calendar.html', headers = headers, timeout = 20)
-        #headers=headers, timeout=20)}
     rUptown.raise_for_status()
     cmd = 'python urljsrender.py http://www.uptowntheater.com/calendar.html'
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     htmlList[1] = out
-    #print('{}'.format('.' * (numColumns / numWebsites))),
-    #print('Uptown successful\n')
 except Exception as e :
     exception = exception + '\nError processing Uptown Theater' \
                                 '/calendar.html.\n{}\n'.format(e)
@@ -99,7 +96,6 @@ Save static html to approptriate variable
 '''
 try :
     rCrossroads = requests.get('http://www.crossroadskc.com/', headers = headers, timeout = 20)
-        #headers=headers, timeout=20)}
     crossroads = rCrossroads.content
     rCrossroads.raise_for_status()
 except Exception as e:
