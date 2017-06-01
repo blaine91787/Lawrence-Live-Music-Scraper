@@ -2,10 +2,11 @@
 <html>
 
 <head>
+
   <title>Place details</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
-  <script type="text/javascript" src='config.js' >
+  <script type='javascript/text' src='config.js'>
   </script>
   <style>
     /* Always set the map height explicitly to define the size of the div
@@ -23,20 +24,22 @@
       padding: 0;
     }
   </style>
+
   <script>
     // This example requires the Places library. Include the libraries=places
     // parameter when you first load the API. For example:
     //<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH1YrWFskgNklcR8GF_Ki2gyq4VTITZ-A&libraries=places">
     var map;
+    var userRadius = 12000;
     var infowindow;
     var service;
     var coordinates = new Array(2); //coordinates[0] == latitude: coordinates[1] == longitude
 
     function initialize() {
-      getLocation();
+      //getLocation();
 
-
-      var center = new google.maps.LatLng(parseInt(coordinates[0]), parseInt(coordinates[1]));
+      var center = new google.maps.LatLng(39.053561,-94.5865387);
+      //var center = new google.maps.LatLng(parseFloat(coordinates[0]), parseFloat(coordinates[1]));
       map = new google.maps.Map(document.getElementById('map'), {
         center: center,
         zoom: 13
@@ -45,13 +48,13 @@
 
       var request = {
         location: center,
-        radius: 8047,
-        keyword: ['bar']
+        radius: userRadius,
+        keyword: ['livemusic']
       };
 
       service = new google.maps.places.PlacesService(map);
 
-      infowindow = new google.maps.InfoWindow();
+
 
       service.nearbySearch(request, callback);
 
@@ -72,6 +75,8 @@
       coordinates[1] = position.coords.longitude;
       console.log(coordinates[0]);
       console.log(coordinates[1]);
+
+      initialize();
     }
 
     function showError(error) {
@@ -94,25 +99,14 @@
     function callback(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
+          console.log(results[i].name)
           createMarker(results[i]);
         }
       }
     }
 
     function createMarker(place) {
-      var placeLoc = place.geometry.location;
-      var marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location
-      });
-      console.log(place);
 
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
-          'Place ID: ' + place.place_id + '<br>' +
-          place.formatted_address + '</div>');
-        infowindow.open(map, this);
-      });
 
       var request = {
         placeId: place.place_id
@@ -126,14 +120,31 @@
 
             if (place.reviews[i].text.includes('band') ||
               place.reviews[i].text.includes('live music') ||
-              place.reviews[i].text.includes('shows') ||
-              place.reviews[i].text.includes('sound')) {
+              place.reviews[i].text.includes('shows')) {
 
               isAVenue = true;
+              console.log(place.reviews[i].text);
+
+
             }
           }
+
           if (isAVenue == true) {
             console.log(place.name);
+            var placeLoc = place.geometry.location;
+            var marker = new google.maps.Marker({
+              map: map,
+              position: place.geometry.location
+            });
+
+            infowindow = new google.maps.InfoWindow();
+            google.maps.event.addListener(marker, 'click', function() {
+              infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+                'Place ID: ' + place.place_id + '<br>' +
+                place.formatted_address + '</div>');
+              infowindow.open(map, this);
+            });
+            console.log(place);
           }
         }
       });
@@ -146,7 +157,11 @@
 
 <body>
   <div id="map"></div>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=" + config.PLACES_KEY + "&libraries=places&callback=initialize">
+  <script>
+    console.log(config.PLACES_KEY);
+    console.log("helloooo");
+  </script>
+  <script async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDH1YrWFskgNklcR8GF_Ki2gyq4VTITZ-A&libraries=places&callback=getLocation'>
   </script>
 </body>
 
