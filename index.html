@@ -5,6 +5,8 @@
   <title>Place details</title>
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <meta charset="utf-8">
+  <script type="text/javascript" src='config.js' >
+  </script>
   <style>
     /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -144,7 +146,7 @@
 
 <body>
   <div id="map"></div>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH1YrWFskgNklcR8GF_Ki2gyq4VTITZ-A&libraries=places&callback=initialize">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=" + config.PLACES_KEY + "&libraries=places&callback=initialize">
   </script>
 </body>
 
