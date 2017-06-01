@@ -58,7 +58,6 @@ var config = {
         PLACES_KEY : 'YOUR_GOOGLE_PLACES_API_KEY'
 }
 
-console.log("hello");
 var script = document.createElement('script');
 script.src = "https://maps.googleapis.com/maps/api/js?key=" + config.PLACES_KEY + "&libraries=places&callback=getLocation";
 document.body.appendChild(script);
