@@ -1,6 +1,7 @@
-# Sensitive Information
-config.py
+
+# Config files holding API keys
 config.js
+config.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
