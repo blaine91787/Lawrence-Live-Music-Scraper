@@ -1,4 +1,4 @@
-import scraper
+from libs import scraper
 import requests
 import time
 import string

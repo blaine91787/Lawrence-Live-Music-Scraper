@@ -1,0 +1,6 @@
+./eventfulpy-0.3
+Django==1.11.2
+httplib2==0.10.3
+lxml==3.7.3
+requests==2.13.0
+simplejson==3.10.0

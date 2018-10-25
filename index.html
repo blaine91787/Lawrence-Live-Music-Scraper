@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+
+  <title>Place details</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+
+
+
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+
+    #map {
+      height: 50%;
+      width: 50%;
+    }
+
+    #search_box {
+      float: left;
+    }
+    /* Optional: Makes the sample page fill the window. */
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <div id="map"></div>
+  <script src="./js/places.js">
+  </script>
+  <script src="./js/htmlInterface.js">
+  </script>
+  <script src="config.js">
+  </script>
+  </div>
+  <div id="search_box">
+    Search venues near you:<br>
+    <input id="venueSearch" type="text" name="venue_search_criteria" value="Venue Search" onFocus="clearField(this)"><br> Search events near you:<br>
+    <input id="eventSearch" type="text" name="event_search_criteria" value="Event Search" onFocus="clearField(this)"><br>
+    <button onclick="searchClick()">
+    </div>
+</body>
+
+</html>

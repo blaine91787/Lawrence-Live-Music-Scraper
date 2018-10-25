@@ -2,10 +2,10 @@
 Scrape the webz and find upcoming showz.
 
 #### Lawrence
-- The Granada
-- The Bottleneck
-- Liberty Hall
-- Jackpot
+- ~~The Granada~~
+- ~~The Bottleneck~~
+- ~~Liberty Hall~~
+- ~~Jackpot~~
 - ~~Jazzhaus~~
 - ~~The Replay~~
 - ~~Taproom~~
